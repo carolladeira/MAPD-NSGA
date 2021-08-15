@@ -228,34 +228,30 @@ void GA::Mutation(vector<Gene> &individual) {
     } else {
 
         int pos1 = rand() % individual.size();
-        int ag = rand() % sizeAgents; ///aleatorio
-       // cout<<endl<<"\t Mutacao de agente --------> Pos1: "<<pos1<<" antes: "<<individual[pos1].agent<<" agora: "<<ag<<" ";
-        individual[pos1].agent = ag;
+//        int ag = rand() % sizeAgents; ///aleatorio
+//       // cout<<endl<<"\t Mutacao de agente --------> Pos1: "<<pos1<<" antes: "<<individual[pos1].agent<<" agora: "<<ag<<" ";
+//        individual[pos1].agent = ag;
 
-
-
-// //       FAZENDO POR VIZINHOS
-//        unsigned seed = rand();
-//        std::default_random_engine e(seed);
-//        int viz = (MUTATION_AGENT * sizeAgents);
-//        std::uniform_int_distribution<int> dis(-viz, viz);
-//        int myNumber = 0;
-//        while (myNumber == 0) myNumber = dis(e);
-//        //  int t  = rand() %  viz;           //entre os vizinhos de agente
-//        int ag = individual[pos1].agent;
-//        // showIndividual(individual);
-//        int id = ag + myNumber;
-//        cout<<endl<<"\t Mutacao de agente --------> Pos1: "<<pos1<<" antes: "<<individual[pos1].agent<<" vizinho: "<<myNumber<<" "<<" id: "<<id;
-//        if (id >= sizeAgents) {
-//            int id_agent = id % sizeAgents;
-//            individual[pos1].agent = copy_agents[id_agent].id;
-//        } else if (id < 0) {
-//            int id_agent = id * -1;
-//            individual[pos1].agent = copy_agents[id_agent].id;
-//        } else {
-//            individual[pos1].agent = copy_agents[id].id;
-//        }
-//        cout<<" final: "<<individual[pos1].agent;
+ //       FAZENDO POR VIZINHOS
+        unsigned seed = rand();
+        std::default_random_engine e(seed);
+        int viz = (MUTATION_AGENT * sizeAgents);
+        std::uniform_int_distribution<int> dis(-viz, viz);
+        int myNumber = 0;
+        while (myNumber == 0) myNumber = dis(e);
+        //  int t  = rand() %  viz;           //entre os vizinhos de agente
+        int ag = individual[pos1].agent;
+        // showIndividual(individual);
+        int id = ag + myNumber;
+       // cout<<endl<<"\t Mutacao de agente --------> Pos1: "<<pos1<<" antes: "<<individual[pos1].agent<<" vizinho: "<<myNumber<<" "<<" id: "<<id;
+        if (id < 0) {
+            int id_agent = sizeAgents + id;
+            individual[pos1].agent = copy_agents[id_agent].id;
+        } else{
+            int id_agent = id % sizeAgents;
+            individual[pos1].agent = copy_agents[id_agent].id;
+        }
+      //  cout<<" final: "<<individual[pos1].agent;
     }
 
 }
