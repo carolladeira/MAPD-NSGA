@@ -157,6 +157,8 @@ public:
     void releaseClosedListNodes(std::map<unsigned int, Node *> &allNodes_table);
 
     bool Move2EP(Agent *agent, int begin_time, bool constraint, Token &token);
+
+    virtual ~PathPlanning();
 };
 
 class Token{

@@ -871,6 +871,8 @@ PathPlanning::Agent_AStar(Agent *ag, int start_loc, Endpoint *goal, int begin_ti
                     continue;
                 }
                 releaseClosedLLNodes(&allNodes_table);
+                delete (empty_node);
+                delete (deleted_node);
                 return t;
             }
         }
@@ -895,6 +897,8 @@ PathPlanning::Agent_AStar(Agent *ag, int start_loc, Endpoint *goal, int begin_ti
         }
     }
     releaseClosedLLNodes(&allNodes_table);
+    delete (empty_node);
+    delete (deleted_node);
     return -1;
 
 }
@@ -1018,7 +1022,10 @@ bool PathPlanning::isConstrained(int curr_loc, int next_loc, int next_timestep, 
 void PathPlanning::releaseClosedLLNodes(hashtable_t *allNodes_table) {
     hashtable_t::iterator it;
     for (it = allNodes_table->begin(); it != allNodes_table->end(); it++) {
+        LLNode* s = (*it).first;
+        LLNode* g = (*it).second;
         delete ((*it).second);  // Node* s = (*it).first; delete (s);
+
     }
 }
 
@@ -1155,6 +1162,10 @@ bool PathPlanning::Move2EP(Agent *agent, int begin_time, bool constraint, Token 
         }
     }
     return false;
+}
+
+PathPlanning::~PathPlanning() {
+
 }
 
 
