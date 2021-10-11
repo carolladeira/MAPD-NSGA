@@ -241,7 +241,6 @@ void GA::Mutation(vector<Gene> &individual) {
         while (myNumber == 0) myNumber = dis(e);
         //  int t  = rand() %  viz;           //entre os vizinhos de agente
         int ag = individual[pos1].agent;
-        // showIndividual(individual);
         int id = ag + myNumber;
        // cout<<endl<<"\t Mutacao de agente --------> Pos1: "<<pos1<<" antes: "<<individual[pos1].agent<<" vizinho: "<<myNumber<<" "<<" id: "<<id;
         if (id < 0) {
@@ -573,8 +572,8 @@ float GA::getFitness(Chromosome &ind) {
    // cout<<" st:  "<<st<<" qtd_task:  "<< qtd_task<<endl;
 
     st = st / qtd_task;
-    //  cout<<endl<<" soc: "<<soc ;
-    //  cout<<endl<<" st: "<< st ;
+   // cout<<endl<<" makespan: "<<makespan ;
+   // cout<<" st: "<< st ;
 
     ind.fitness[0] = makespan;
     ind.fitness[1] = st;
@@ -585,8 +584,11 @@ int GA::escalonamento(vector<Gene> &individual) {
     vector<Agent> agents = copy_agents;
     Task n;
     int id_agent;
+    int qtd_task = 0;
+    float st =0;
     for (auto &i : individual) {
         int id_task = i.task;
+        qtd_task++;
         n = task_total[id_task];
         int release_time = n.release_time;
         int loc_start_task = n.start->loc;
@@ -595,15 +597,15 @@ int GA::escalonamento(vector<Gene> &individual) {
         i.agent = id_agent;
         int ft = Dis[agents[id_agent].loc][loc_start_task] + agents[id_agent].finish_time;
         // int ft =  max(Dis[agents[id_agent].loc][loc_start_task] + agents[id_agent].finish_time, release_time);
-
         // cout<<endl<<"Agente "<<id_agent<<" pega tarefa "<<id_task <<" Rt: "<<release_time<<" loc: "<<agents[id_agent].loc<<" -> "<<loc_start_task<<"[";
         // cout<<ft<<"] -> "<<loc_goal_task<<"["<<Dis[loc_start_task][loc_goal_task]<<"] = "<< ft+ Dis[loc_start_task][loc_goal_task];
-
         agents[id_agent].finish_time = ft + Dis[loc_start_task][loc_goal_task];
         agents[id_agent].loc = loc_goal_task;
+        st += agents[id_agent].finish_time - release_time;
     }
     int fitness = 0;
     Agent ag;
+
     for (auto &agent : agents) {
         ag = agent;
         int finish_time = ag.finish_time;
@@ -611,7 +613,9 @@ int GA::escalonamento(vector<Gene> &individual) {
             fitness = finish_time;
         }
     }
-    //cout<<"ft: "<<fitness_m ;
+    float ser = st/qtd_task;
+  //  cout<<"ft m: "<<fitness ;
+   // cout<<" ft st: "<<ser <<endl;
     return fitness;
 }
 
@@ -896,10 +900,13 @@ int GA::run_GA_E(bool bestInd) {
         cout << "ERR0";
 #endif
 
-    for (int i = 0; i < sizePopulation_E; i++) {
+    for (int i = 0; i < sizePopulation; i++) {
         pop[i].fitness[0] = escalonamento(pop[i].Individual);
 
     }
+//    for (int i = 0; i < sizePopulation; i++) {
+//        pop[i].fitness[0] = getFitness(pop[i]);
+//    }
     int geracoes = 0;
     while (geracoes < GENERATIONS) {
         int cPop = 0;
@@ -924,16 +931,20 @@ int GA::run_GA_E(bool bestInd) {
             newPop.push_back(off2);
         }
 
-        for (int i = 0; i < sizePopulation_E; i++) {
+        for (int i = 0; i < sizePopulation; i++) {
             newPop[i].fitness[0] = escalonamento(newPop[i].Individual);
         }
+
+//        for (int i = 0; i < sizePopulation; i++) {
+//            newPop[i].fitness[0] = getFitness(newPop[i]);
+//        }
 
         std::sort(pop.begin(), pop.end(), sort_fitness0);
         std::sort(newPop.begin(), newPop.end(), sort_fitness0);
 
 
         int e = 0;
-        for (int i = ceil(sizePopulation_E * ELITISM); i < sizePopulation_E; i++) {
+        for (int i = ceil(sizePopulation * ELITISM); i < sizePopulation; i++) {
             pop[i] = newPop[e];
             e++;
         }
@@ -951,7 +962,7 @@ int GA::run_GA_E(bool bestInd) {
     //cout <<"Duration: "<<duration<< " Fitness: " << pop[id].fitness_m <<" Generations:" <<i<<endl;
     this->fitness_makespan = pop[id].fitness[0];
     this->fitness_st = pop[id].fitness[1];
-    cout<<"st: "<<this->fitness_st<<endl;
+   // cout<<"st: "<<this->fitness_st<<endl;
     return id;
 }
 
